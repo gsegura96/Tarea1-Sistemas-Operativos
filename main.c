@@ -140,7 +140,7 @@ void get_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc *r
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file)
 {
     int width, height; // image width, heigth,
-    stbi_uc *image = stbi_load("test_img/green.jpg", &width, &height, NULL, 3);
+    stbi_uc *image = stbi_load("test_img/img.png", &width, &height, NULL, 4);
     printf("w: %i\n", width);
     printf("h: %i\n", height);
 
@@ -148,9 +148,22 @@ int image_main(const char *save_folder, const char *colors_folder, const char *h
 
     get_pixel(image, width, 0, 0, &r, &g, &b);
 
-    printf("r: %i\n", r);
-    printf("g: %i\n", g);
-    printf("b: %i\n", b);
+    unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
+
+    for (int x = 0; x < 30; x++)
+    {
+        for (int y = 0; y < 30; y++)
+        {
+            get_pixel(image, width, x, y, &r, &g, &b);
+            r_sum += r;
+            g_sum += g;
+            b_sum += b;
+        }
+    }
+
+    printf("r: %li\n", r_sum);
+    printf("g: %li\n", g_sum);
+    printf("b: %li\n", b_sum);
 
     return 0;
 }
