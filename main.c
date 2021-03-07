@@ -1,15 +1,19 @@
-// Server side C program to demonstrate HTTP Server programming
+// Tecnológico de Costa Rica
+// Area Académica de Ingeniería en Computadores
+// CE4303 Sistemas Operativos - Tarea 1
+// Por Joseph Vargas y Gustavo Segura
 #include <stdio.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
-
 #include "config.h"
 
+// Constants
 #define CONFIG_FILE "./server.conf"
 
+// Function declarations
 int server_main(int port, const char *save_folder, const char *log_file);
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file);
 
