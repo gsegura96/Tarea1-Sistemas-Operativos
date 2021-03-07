@@ -145,9 +145,6 @@ int image_main(const char *save_folder, const char *colors_folder, const char *h
     printf("h: %i\n", height);
 
     stbi_uc r, g, b;
-
-    get_pixel(image, width, 0, 0, &r, &g, &b);
-
     unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
 
     for (int x = 0; x < 30; x++)
