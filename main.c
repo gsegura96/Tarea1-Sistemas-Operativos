@@ -32,12 +32,14 @@ int main(int argc, char const *argv[])
     int *port;
     ini_table_get_entry_as_int(config, "ImageServer", "port", port);
 
+    // DEBUG
     printf("save_dir is: %s\n", save_dir);
     printf("colors_dir is: %s\n", colors_dir);
     printf("histo_dir is: %s\n", histo_dir);
     printf("log_file is: %s\n", histo_dir);
     printf("port is: %i\n", *port);
 
+    // TODO: Threads here
     server_main(*port, save_dir, log_file);
     image_main(save_dir, colors_dir, histo_dir, log_file);
 
