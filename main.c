@@ -13,7 +13,7 @@
 // Constants
 #define CONFIG_FILE "./server.conf"
 
-// Function declarations
+// Function definitions
 int server_main(int port, const char *save_folder, const char *log_file);
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file);
 
@@ -36,14 +36,16 @@ int main(int argc, char const *argv[])
     int *port;
     ini_table_get_entry_as_int(config, "ImageServer", "port", port);
 
-    // DEBUG
+    // Debug
     printf("save_dir is: %s\n", save_dir);
     printf("colors_dir is: %s\n", colors_dir);
     printf("histo_dir is: %s\n", histo_dir);
     printf("log_file is: %s\n", histo_dir);
     printf("port is: %i\n", *port);
 
-    // TODO: Threads here
+    char *test = "HOLA MUNDO TAVO TE QUIERO";
+
+    // TODO: Threads
     server_main(*port, save_dir, log_file);
     image_main(save_dir, colors_dir, histo_dir, log_file);
 
