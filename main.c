@@ -9,13 +9,15 @@
 #include <netinet/in.h>
 #include <string.h>
 #include "config.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // Constants
 #define CONFIG_FILE "./server.conf"
 
 // Function definitions
-int server_main(int port, const char *save_folder, const char *log_file);
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file);
+int server_main(int port, const char *save_folder, const char *log_file);
 
 int main(int argc, char const *argv[])
 {
@@ -44,8 +46,8 @@ int main(int argc, char const *argv[])
     printf("port is: %i\n", *port);
 
     // TODO: Threads
-    server_main(*port, save_dir, log_file);
     image_main(save_dir, colors_dir, histo_dir, log_file);
+    server_main(*port, save_dir, log_file);
 
     // Destroy when the program exits
     ini_table_destroy(config);
@@ -128,7 +130,27 @@ int server_main(int port, const char *save_folder, const char *log_file)
     return 0;
 }
 
+void get_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc *r, stbi_uc *g, stbi_uc *b)
+{
+    *r = image[4 * (y * imageWidth + x) + 0];
+    *g = image[4 * (y * imageWidth + x) + 1];
+    *b = image[4 * (y * imageWidth + x) + 2];
+}
+
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file)
 {
+    int width, height; // image width, heigth,
+    stbi_uc *image = stbi_load("test_img/green.jpg", &width, &height, NULL, 3);
+    printf("w: %i\n", width);
+    printf("h: %i\n", height);
+
+    stbi_uc r, g, b;
+
+    get_pixel(image, width, 0, 0, &r, &g, &b);
+
+    printf("r: %i\n", r);
+    printf("g: %i\n", g);
+    printf("b: %i\n", b);
+
     return 0;
 }
