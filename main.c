@@ -22,7 +22,7 @@ int main(int argc, char const *argv[])
     // Create conf object
     ini_table_s *config = ini_table_create();
     // Check if exists
-    if (!ini_table_read_from_file(config, "./server.conf"))
+    if (!ini_table_read_from_file(config, CONFIG_FILE))
     {
         puts("Error: Config file not found");
         return EXIT_FAILURE;
