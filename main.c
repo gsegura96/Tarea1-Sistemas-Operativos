@@ -8,22 +8,44 @@
 
 #include "config.h"
 
-#define PORT 8085
+#define CONFIG_FILE "./server.conf"
 
-int server_main(int port, char *save_folder, char *log_folder);
-int image_main(char *save_folder, char *colors_folder, char *histo_folder, char *log_folder);
+int server_main(int port, const char *save_folder, const char *log_file);
+int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file);
 
 int main(int argc, char const *argv[])
 {
+    // Create conf object
     ini_table_s *config = ini_table_create();
+    // Check if exists
+    if (!ini_table_read_from_file(config, CONFIG_FILE))
+    {
+        puts("Error: Config file not found");
+        return EXIT_FAILURE;
+    }
 
-    char *test = "HOLA MUNDO TAVO TE QUIERO";
+    // Load configuration in variables
+    const char *save_dir = ini_table_get_entry(config, "ImageServer", "save_dir");
+    const char *colors_dir = ini_table_get_entry(config, "ImageServer", "colors_dir");
+    const char *histo_dir = ini_table_get_entry(config, "ImageServer", "histo_dir");
+    const char *log_file = ini_table_get_entry(config, "ImageServer", "log_file");
+    int *port;
+    ini_table_get_entry_as_int(config, "ImageServer", "port", port);
 
-    server_main(PORT, test, test);
-    image_main(test, test, test, test);
+    printf("save_dir is: %s\n", save_dir);
+    printf("colors_dir is: %s\n", colors_dir);
+    printf("histo_dir is: %s\n", histo_dir);
+    printf("log_file is: %s\n", histo_dir);
+    printf("port is: %i\n", *port);
+
+    server_main(*port, save_dir, log_file);
+    image_main(save_dir, colors_dir, histo_dir, log_file);
+
+    // Destroy when the program exits
+    ini_table_destroy(config);
 }
 
-int server_main(int port, char *save_folder, char *log_folder)
+int server_main(int port, const char *save_folder, const char *log_file)
 {
     int server_fd, new_socket;
     long valread;
@@ -42,7 +64,7 @@ int server_main(int port, char *save_folder, char *log_folder)
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(port);
 
     memset(address.sin_zero, '\0', sizeof address.sin_zero);
 
@@ -100,7 +122,7 @@ int server_main(int port, char *save_folder, char *log_folder)
     return 0;
 }
 
-int image_main(char *save_folder, char *colors_folder, char *histo_folder, char *log_folder)
+int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file)
 {
     return 0;
 }
