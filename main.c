@@ -22,7 +22,7 @@ int main(int argc, char const *argv[])
     // Create conf object
     ini_table_s *config = ini_table_create();
     // Check if exists
-    if (!ini_table_read_from_file(config, CONFIG_FILE))
+    if (!ini_table_read_from_file(config, "./server.conf"))
     {
         puts("Error: Config file not found");
         return EXIT_FAILURE;
@@ -33,7 +33,7 @@ int main(int argc, char const *argv[])
     const char *colors_dir = ini_table_get_entry(config, "ImageServer", "colors_dir");
     const char *histo_dir = ini_table_get_entry(config, "ImageServer", "histo_dir");
     const char *log_file = ini_table_get_entry(config, "ImageServer", "log_file");
-    int *port;
+    int *port = malloc(sizeof(int));
     ini_table_get_entry_as_int(config, "ImageServer", "port", port);
 
     // Debug
@@ -42,8 +42,6 @@ int main(int argc, char const *argv[])
     printf("histo_dir is: %s\n", histo_dir);
     printf("log_file is: %s\n", histo_dir);
     printf("port is: %i\n", *port);
-
-    char *test = "HOLA MUNDO TAVO TE QUIERO";
 
     // TODO: Threads
     server_main(*port, save_dir, log_file);
