@@ -11,6 +11,9 @@
 #include <signal.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "uini.h"
@@ -246,6 +249,38 @@ void set_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc r,
     image[4 * (y * imageWidth + x) + 2] = b;
 }
 
+char *get_smallest_file(char *directory)
+{
+    DIR *d;
+    struct dirent *dir;
+    struct stat st;
+    unsigned long int max_size = 0;
+    char *current_file = malloc(sizeof(char) * 512);
+    d = opendir(directory);
+    if (d)
+    {
+        while ((dir = readdir(d)) != NULL)
+        {
+            if (dir->d_type == DT_DIR)
+            {
+                continue;
+            }
+            char path[512];
+            strcpy(path, directory);
+            strcat(path, "/");
+            strcat(path, dir->d_name);
+            stat(path, &st);
+
+            if (max_size == 0 || st.st_size < max_size)
+            {
+                max_size = st.st_size;
+                strcpy(current_file, path);
+            }
+        }
+        closedir(d);
+    }
+    return current_file;
+}
 
 void *image_main(void *context)
 {
@@ -253,6 +288,8 @@ void *image_main(void *context)
 
     printf("PORT FROM IMG THREAD: %i\n", params->port);
     printf("LOGFILE FROM IMG THREAD: %s\n", params->log_file);
+
+    printf("Smallest file: %s\n", get_smallest_file("."));
 
     while (running)
     {
