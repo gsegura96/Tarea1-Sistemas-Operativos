@@ -36,6 +36,11 @@ int parseHTTP(char *buffer);
 
 void *image_main(void *context);
 void *server_main(void *context);
+void RGB_to_grayscale(stbi_uc *image,int height, int width);
+
+
+
+
 
 // Program running variable
 bool running = true;
@@ -161,7 +166,7 @@ void *server_main(void *context)
         memset(buffer, '\0', sizeof(char) * 300000);
 
         valread = read(new_socket, buffer, 300000);
-
+        
         parseHTTP(buffer);
 
         // printf("________________________\n\n\n%s\n", buffer);
@@ -174,7 +179,7 @@ void *server_main(void *context)
 
 int parseHTTP(char *buffer)
 {
-
+    printf("XXXXXXXXXXXXXXXXXXXXXX BUFFER XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n%s\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx\n", buffer);
     char *s0, *s1;
     s0 = strstr(buffer, "boundary=");
     int l0 = strlen("boundary=");
@@ -182,7 +187,7 @@ int parseHTTP(char *buffer)
 
     if (s0 != NULL)
     {
-
+        
         printf("boundary encontrado\n");
         s1 = strstr(s0, "\n");
         char boundary[45];
@@ -193,14 +198,14 @@ int parseHTTP(char *buffer)
         int boundarylen = strlen(boundary);
         char *file_start = strstr(buffer, "Content-Disposition:");
         //         char *file_start =  strstr(buffer, "PNG");
-
+        1+1;
         if (file_start != NULL)
         {
             printf("XXXXXXXXXXXXXXXXXXXXXX INICIO ENCONTRADO XXXXXXXXXXXXXXXx\n");
             file_start = strstr(file_start + 1, "\n");
             file_start = strstr(file_start + 1, "\n");
 
-            //             printf("XXXXXXXXXXXXXXXXXXXXXX BUFFER FS XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n%s\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx\n", file_start);
+            //             printf("XXXXXXXXXXXXXXXXXXXXXX BUFFER FS XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n%s\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx\n", buffer);
             //             char *file_end = strstr(file_start ,boundary);
             //             char *file_end = memmem(file_start, sizeof(char)*(300000), boundary, sizeof(char)*boundarylen);
             1 + 1;
@@ -234,6 +239,14 @@ void get_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc *r
     *b = image[4 * (y * imageWidth + x) + 2];
 }
 
+void set_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc r, stbi_uc g, stbi_uc b)
+{
+    image[4 * (y * imageWidth + x) + 0] = r;
+    image[4 * (y * imageWidth + x) + 1] = g;
+    image[4 * (y * imageWidth + x) + 2] = b;
+}
+
+
 void *image_main(void *context)
 {
     ConfParams *params = context;
@@ -247,7 +260,11 @@ void *image_main(void *context)
         stbi_uc *image = stbi_load("test_img/img.png", &width, &height, NULL, 4);
         printf("w: %i\n", width);
         printf("h: %i\n", height);
-
+        
+        
+//         stbi_write_png("test_img/img_out.png", width,  height, 4, image,4*width);
+        RGB_to_grayscale(image, height,  width);
+         
         stbi_uc r, g, b;
         unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
 
@@ -264,7 +281,7 @@ void *image_main(void *context)
         printf("r: %li\n", r_sum);
         printf("g: %li\n", g_sum);
         printf("b: %li\n", b_sum);
-        sleep(1);
+        sleep(10);
     }
 }
 
@@ -276,18 +293,26 @@ double sRGB_to_linear(double x)
     return pow((x + 0.055) / 1.055, 2.4);
 }
 
-void RGB_to_grayscale(stbi_uc *image, int width)
+void RGB_to_grayscale(stbi_uc *image,int height, int width)
 {
     stbi_uc r, g, b;
-    for (int x = 0; x < 30; x++)
+    for (int x = 0; x < width; x++)
     {
-        for (int y = 0; y < 30; y++)
+        for (int y = 0; y < height; y++)
         {
             get_pixel(image, width, x, y, &r, &g, &b);
             double R_linear = sRGB_to_linear(r / 255.0);
             double G_linear = sRGB_to_linear(g / 255.0);
             double B_linear = sRGB_to_linear(b / 255.0);
             double gray_linear = 0.2126 * R_linear + 0.7152 * G_linear + 0.0722 * B_linear;
+            
+             r = round(gray_linear*255);
+             g = round(gray_linear*255);
+             b = round(gray_linear*255);
+            
+            set_pixel(image, width,  x,  y,  r,  g,  b);
+
         }
     }
+    stbi_write_png("test_img/img_out_gs.png", width,  height, 4, image,4*width);
 }
