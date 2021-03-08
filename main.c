@@ -15,6 +15,10 @@
 #include "stb_image.h"
 #include "uini.h"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
+
 // Constants
 #define CONFIG_FILE "./server.conf"
 // Struct to contain the configuration

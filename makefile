@@ -1,6 +1,6 @@
 OBJS	= main.o 
 SOURCE	= main.c
-HEADER	= config.h stb_image.h uini.h
+HEADER	= config.h stb_image.h uini.h stb_image_write.h
 OUT	= ImageServer
 CC	 = gcc
 FLAGS	 = -g -c -Wall -std=c17 
