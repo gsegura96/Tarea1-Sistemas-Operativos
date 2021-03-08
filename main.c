@@ -17,6 +17,7 @@
 
 // Constants
 #define CONFIG_FILE "./server.conf"
+// Struct to contain the configuration
 typedef struct
 {
     int port;
@@ -43,7 +44,7 @@ void handle_stop(int signum)
     puts("Exiting from ImageServer...");
     running = false;
 }
-
+// Handle the conf file
 void conf_handler(const char *section, const char *key, const char *value, void *params_pointer)
 {
     ConfParams *params = params_pointer;
