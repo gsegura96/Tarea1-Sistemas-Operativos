@@ -8,58 +8,111 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
-#include "config.h"
-#include <math.h>
-
+#include <signal.h>
+#include <pthread.h>
+#include <stdbool.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "uini.h"
 
 // Constants
 #define CONFIG_FILE "./server.conf"
+typedef struct
+{
+    int port;
+    const char *save_dir;
+    const char *colors_dir;
+    const char *histo_dir;
+    const char *log_file;
+} ConfParams;
 
 // Function definitions
-int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file);
 int parseHTTP(char* buffer);
 
-int server_main(int port, const char *save_folder, const char *log_file);
+
+
+void *image_main(void *context);
+void *server_main(void *context);
+
+// Program running variable
+bool running = true;
+struct sigaction action;
+// Handle stop
+void handle_stop(int signum)
+{
+    puts("Exiting from ImageServer...");
+    running = false;
+}
+
+void conf_handler(const char *section, const char *key, const char *value, void *params_pointer)
+{
+    ConfParams *params = params_pointer;
+    if (strcmp(key, "save_dir") == 0)
+    {
+        params->save_dir = strdup(value);
+    }
+    else if (strcmp(key, "colors_dir") == 0)
+    {
+        params->colors_dir = strdup(value);
+    }
+    else if (strcmp(key, "histo_dir") == 0)
+    {
+        params->histo_dir = strdup(value);
+    }
+    else if (strcmp(key, "log_file") == 0)
+    {
+        params->log_file = strdup(value);
+    }
+    else if (strcmp(key, "port") == 0)
+    {
+        params->port = atoi(value);
+    }
+}
 
 int main(int argc, char const *argv[])
 {
+    signal(SIGTERM, handle_stop);
+
+    ConfParams params;
 
     // Create conf object
-    ini_table_s *config = ini_table_create();
-    // Check if exists
-    if (!ini_table_read_from_file(config, CONFIG_FILE))
+    FILE *f = fopen(CONFIG_FILE, "r");
+    uini_parse(f, conf_handler, &params);
+    fclose(f);
+
+    // TODO: Check if exists
+    if (false)
     {
         puts("Error: Config file not found");
         return EXIT_FAILURE;
     }
 
-    // Load configuration in variables
-    const char *save_dir = ini_table_get_entry(config, "ImageServer", "save_dir");
-    const char *colors_dir = ini_table_get_entry(config, "ImageServer", "colors_dir");
-    const char *histo_dir = ini_table_get_entry(config, "ImageServer", "histo_dir");
-    const char *log_file = ini_table_get_entry(config, "ImageServer", "log_file");
-    int *port = malloc(sizeof(int));
-    ini_table_get_entry_as_int(config, "ImageServer", "port", port);
-
     // Debug
-    printf("save_dir is: %s\n", save_dir);
-    printf("colors_dir is: %s\n", colors_dir);
-    printf("histo_dir is: %s\n", histo_dir);
-    printf("log_file is: %s\n", histo_dir);
-    printf("port is: %i\n", *port);
+    printf("save_dir is: %s\n", params.save_dir);
+    printf("colors_dir is: %s\n", params.colors_dir);
+    printf("histo_dir is: %s\n", params.histo_dir);
+    printf("log_file is: %s\n", params.log_file);
+    printf("port is: %i\n", params.port);
 
-    // TODO: Threads
-    image_main(save_dir, colors_dir, histo_dir, log_file);
-    server_main(*port, save_dir, log_file);
+    // Main threads
+    pthread_t image_thread;
+    pthread_t server_thread;
+    pthread_create(&image_thread, NULL, image_main, &params);
+    pthread_create(&server_thread, NULL, server_main, &params);
 
-    // Destroy when the program exits
-    ini_table_destroy(config);
+    pthread_join(image_thread, NULL);
+    pthread_join(server_thread, NULL);
+
+    return 0;
 }
 
-int server_main(int port, const char *save_folder, const char *log_file)
+void *server_main(void *context)
 {
+    ConfParams *params = context;
+
+    printf("PORT FROM SERVER THREAD: %i\n", params->port);
+    printf("LOGFILE FROM SERVER THREAD: %s\n", params->log_file);
+
     int server_fd, new_socket;
     long valread;
     struct sockaddr_in address;
@@ -77,7 +130,7 @@ int server_main(int port, const char *save_folder, const char *log_file)
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(port);
+    address.sin_port = htons(params->port);
 
     memset(address.sin_zero, '\0', sizeof address.sin_zero);
 
@@ -91,7 +144,7 @@ int server_main(int port, const char *save_folder, const char *log_file)
         perror("In listen");
         exit(EXIT_FAILURE);
     }
-    while (1)
+    while (running)
     {
         printf("\n+++++++ Waiting for new connection ++++++++\n\n");
         if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
@@ -114,7 +167,6 @@ int server_main(int port, const char *save_folder, const char *log_file)
         printf("------------------Hello message sent-------------------");
         close(new_socket);
     }
-    return 0;
 }
 
 int parseHTTP(char* buffer){
@@ -175,33 +227,45 @@ void get_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc *r
     *b = image[4 * (y * imageWidth + x) + 2];
 }
 
-int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file)
+
+
+void *image_main(void *context)
 {
-    int width, height; // image width, heigth,
-    stbi_uc *image = stbi_load("test_img/img.png", &width, &height, NULL, 4);
-    printf("w: %i\n", width);
-    printf("h: %i\n", height);
+    ConfParams *params = context;
 
-    stbi_uc r, g, b;
-    unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
+    printf("PORT FROM IMG THREAD: %i\n", params->port);
+    printf("LOGFILE FROM IMG THREAD: %s\n", params->log_file);
 
-    for (int x = 0; x < 30; x++)
+    while (running)
     {
-        for (int y = 0; y < 30; y++)
+        int width, height; // image width, heigth,
+        stbi_uc *image = stbi_load("test_img/img.png", &width, &height, NULL, 4);
+        printf("w: %i\n", width);
+        printf("h: %i\n", height);
+
+        stbi_uc r, g, b;
+        unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
+
+        for (int x = 0; x < 30; x++)
         {
-            get_pixel(image, width, x, y, &r, &g, &b);
-            r_sum += r;
-            g_sum += g;
-            b_sum += b;
+            for (int y = 0; y < 30; y++)
+            {
+                get_pixel(image, width, x, y, &r, &g, &b);
+                r_sum += r;
+                g_sum += g;
+                b_sum += b;
+            }
         }
+        printf("r: %li\n", r_sum);
+        printf("g: %li\n", g_sum);
+        printf("b: %li\n", b_sum);
+        sleep(1);
     }
-
-    printf("r: %li\n", r_sum);
-    printf("g: %li\n", g_sum);
-    printf("b: %li\n", b_sum);
-
-    return 0;
 }
+        
+        
+        
+        
 
 // https://stackoverflow.com/questions/15686277/convert-rgb-to-grayscale-in-c#15686412
 double sRGB_to_linear(double x) {
@@ -210,9 +274,9 @@ double sRGB_to_linear(double x) {
 }
 
 
-void RGB_to_grayscale(stbi_uc *image, size_t imageWidth)
+void RGB_to_grayscale(stbi_uc *image, int width)
 {
-    int r,g,b;
+    stbi_uc r,g,b;
     for (int x = 0; x < 30; x++)
     {
         for (int y = 0; y < 30; y++)
