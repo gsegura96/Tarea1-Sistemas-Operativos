@@ -1,0 +1,55 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x004\x00T\x00a\x00r\x00e\x00a\x001\x00-\x00S\x00i\x00s\x00t\x00e\x00m\x00a\x00s\x00-\x00O\x00p\x00e\x00r\x00a\x00t\x00i\x00v\x00o\x00s)
+
+[Cppcheck]
+checkConfig=true
+checkInformation=true
+checkMissingInclude=true
+checkPerformance=true
+checkPortability=true
+checkStyle=true
+checkUnusedFunction=true
+forceCheck=true
+inconclusiveAnalysis=true
+
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=New Compiled Binary Launcher
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Break on Start=false
+Debugger Shell=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+Display Demangle Names=true
+Display Static Members=true
+EnvironmentGroup=
+Executable=file:///home/gsegura/Documents/TEC/2021/S1/operativos/tareas/1/Tarea1-Sistemas-Operativos/ImageServer
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+GDB Path=file:///usr/bin/gdb
+Kill Before Executing Again=65536
+LLDB Arguments=
+LLDB Config Script=
+LLDB Environment=
+LLDB Executable=file:///usr/bin/lldb-mi
+LLDB Inherit System Env=true
+LLDB Remote Debugging=false
+LLDB Remote Path=
+LLDB Remote Server=
+Project Target=
+Remote GDB Config Script=
+Remote GDB Run Script=
+Remote GDB Shell Script=
+Start With=ApplicationOutput
+Use External Terminal=false
+Working Directory=
+isExecutable=true
+
+[Project]
+VersionControlSupport=kdevgit

@@ -9,6 +9,9 @@
 #include <netinet/in.h>
 #include <string.h>
 #include "config.h"
+#include <gnu/libc-version.h>
+
+// #include "multipartparser.h"
 
 // Constants
 #define CONFIG_FILE "./server.conf"
@@ -16,9 +19,21 @@
 // Function definitions
 int server_main(int port, const char *save_folder, const char *log_file);
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file);
+int parseHTTP(char* buffer);
+
+void *memmem(const void *haystack, size_t hlen, const void *needle, size_t nlen);
+
+
+
+
+
 
 int main(int argc, char const *argv[])
 {
+    
+
+
+
     // Create conf object
     ini_table_s *config = ini_table_create();
     // Check if exists
@@ -59,7 +74,7 @@ int server_main(int port, const char *save_folder, const char *log_file)
     int addrlen = sizeof(address);
 
     // Only this line has been changed. Everything is same.
-    char *hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+    char *hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!\n";
 
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -93,40 +108,106 @@ int server_main(int port, const char *save_folder, const char *log_file)
             exit(EXIT_FAILURE);
         }
 
-        char buffer[3000000] = {0};
-        valread = read(new_socket, buffer, 3000000);
+        // char buffer[3000000] = {0};
+        char *buffer = (char *) malloc(300000);
+        memset(buffer, '\0', sizeof(char)*300000);
 
-        char *s0, *s1;
-        s0 = strstr(buffer, "boundary="); // search for string "hassasin" in buff
-        int l0 = strlen("boundary=");
+        valread = read(new_socket, buffer, 300000);
 
-        if (s0 != NULL) // if successful then s now points at "hassasin"
-        {
-            printf("Found string at index = %d\n", s0 - buffer);
+        parseHTTP(buffer);
 
-            s1 = strstr(s0, "\n"); // search for string "hassasin" in buff
-
-            char boundary[40];
-            memset(boundary, '\0', sizeof(boundary));
-            strncpy(boundary, s0 + l0, s1 - s0 - l0);
-
-            //             printf("%s\n",s );
-            //             printf("%.*s\n",s1-s0-l0,s0+l0 );
-            printf("BOUNDARY: %s\n", boundary);
-
-        } // index of "hassasin" in buff can be found by pointer subtraction
-        else
-        {
-            printf("String not found\n"); // `strstr` returns NULL if search string not found
-        }
-
-        printf("________________________\n\n\n%s\n", buffer);
+        // printf("________________________\n\n\n%s\n", buffer);
+        free(buffer);
         write(new_socket, hello, strlen(hello));
         printf("------------------Hello message sent-------------------");
         close(new_socket);
     }
     return 0;
 }
+
+int parseHTTP(char* buffer){
+
+    char *s0, *s1;
+    s0 = strstr(buffer, "boundary=");
+    int l0 = strlen("boundary=");
+    printf("funcion llamada\n");
+
+    if(s0 != NULL){
+
+        printf("boundary encontrado\n");
+        s1 = strstr(s0, "\n");
+        char boundary[45];
+        memset(boundary, '\0', sizeof(boundary));
+        strncpy(boundary, s0 + l0, s1 - s0 - l0);
+    
+        printf("BOUNDARY: %s\n", boundary);
+        int boundarylen= strlen(boundary);
+        char *file_start =  strstr(buffer, "Content-Disposition:");
+//         char *file_start =  strstr(buffer, "PNG");
+        
+        if(file_start != NULL){
+            printf("XXXXXXXXXXXXXXXXXXXXXX INICIO ENCONTRADO XXXXXXXXXXXXXXXx\n");
+            file_start = strstr(file_start+1 ,"\n");
+            file_start = strstr(file_start+1 ,"\n");
+
+//             printf("XXXXXXXXXXXXXXXXXXXXXX BUFFER FS XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n%s\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx\n", file_start);
+//             char *file_end = strstr(file_start ,boundary);
+//             char *file_end = memmem(file_start, sizeof(char)*(300000), boundary, sizeof(char)*boundarylen);
+            1+1;
+//             if (file_end!= NULL){
+            FILE *fp;
+            fp = fopen("test_file.png", "wb");
+            fwrite(file_start+3,sizeof(char),300000-(file_start-buffer),fp);
+            // fwrite(boundary,sizeof(char),boundarylen,fp);
+            fclose(fp);
+//             }
+//             else{
+//                 printf("no encontró el borde\n");
+//             }
+        }
+        else{
+            printf("file start error\n");
+        }
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+
+
+
+/*
+ * The memmem() function finds the start of the first occurrence of the
+ * substring 'needle' of length 'nlen' in the memory area 'haystack' of
+ * length 'hlen'.
+ *
+ * The return value is a pointer to the beginning of the sub-string, or
+ * NULL if the substring is not found.
+ */
+void *memmem(const void *haystack, size_t hlen, const void *needle, size_t nlen)
+{
+    int needle_first;
+    const void *p = haystack;
+    size_t plen = hlen;
+
+    if (!nlen)
+        return NULL;
+
+    needle_first = *(unsigned char *)needle;
+
+    while (plen >= nlen && (p = memchr(p, needle_first, plen - nlen + 1)))
+    {
+        if (!memcmp(p, needle, nlen))
+            return (void *)p;
+
+        p++;
+        plen = hlen - (p - haystack);
+    }
+
+    return NULL;
+}
+
 
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file)
 {
