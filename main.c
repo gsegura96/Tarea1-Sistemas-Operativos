@@ -28,9 +28,7 @@ typedef struct
 } ConfParams;
 
 // Function definitions
-int parseHTTP(char* buffer);
-
-
+int parseHTTP(char *buffer);
 
 void *image_main(void *context);
 void *server_main(void *context);
@@ -155,8 +153,8 @@ void *server_main(void *context)
         }
 
         // char buffer[3000000] = {0};
-        char *buffer = (char *) malloc(300000);
-        memset(buffer, '\0', sizeof(char)*300000);
+        char *buffer = (char *)malloc(300000);
+        memset(buffer, '\0', sizeof(char) * 300000);
 
         valread = read(new_socket, buffer, 300000);
 
@@ -170,56 +168,60 @@ void *server_main(void *context)
     }
 }
 
-int parseHTTP(char* buffer){
+int parseHTTP(char *buffer)
+{
 
     char *s0, *s1;
     s0 = strstr(buffer, "boundary=");
     int l0 = strlen("boundary=");
     printf("funcion llamada\n");
 
-    if(s0 != NULL){
+    if (s0 != NULL)
+    {
 
         printf("boundary encontrado\n");
         s1 = strstr(s0, "\n");
         char boundary[45];
         memset(boundary, '\0', sizeof(boundary));
         strncpy(boundary, s0 + l0, s1 - s0 - l0);
-    
-        printf("BOUNDARY: %s\n", boundary);
-        int boundarylen= strlen(boundary);
-        char *file_start =  strstr(buffer, "Content-Disposition:");
-//         char *file_start =  strstr(buffer, "PNG");
-        
-        if(file_start != NULL){
-            printf("XXXXXXXXXXXXXXXXXXXXXX INICIO ENCONTRADO XXXXXXXXXXXXXXXx\n");
-            file_start = strstr(file_start+1 ,"\n");
-            file_start = strstr(file_start+1 ,"\n");
 
-//             printf("XXXXXXXXXXXXXXXXXXXXXX BUFFER FS XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n%s\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx\n", file_start);
-//             char *file_end = strstr(file_start ,boundary);
-//             char *file_end = memmem(file_start, sizeof(char)*(300000), boundary, sizeof(char)*boundarylen);
-            1+1;
-//             if (file_end!= NULL){
+        printf("BOUNDARY: %s\n", boundary);
+        int boundarylen = strlen(boundary);
+        char *file_start = strstr(buffer, "Content-Disposition:");
+        //         char *file_start =  strstr(buffer, "PNG");
+
+        if (file_start != NULL)
+        {
+            printf("XXXXXXXXXXXXXXXXXXXXXX INICIO ENCONTRADO XXXXXXXXXXXXXXXx\n");
+            file_start = strstr(file_start + 1, "\n");
+            file_start = strstr(file_start + 1, "\n");
+
+            //             printf("XXXXXXXXXXXXXXXXXXXXXX BUFFER FS XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n%s\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx\n", file_start);
+            //             char *file_end = strstr(file_start ,boundary);
+            //             char *file_end = memmem(file_start, sizeof(char)*(300000), boundary, sizeof(char)*boundarylen);
+            1 + 1;
+            //             if (file_end!= NULL){
             FILE *fp;
             fp = fopen("test_file.png", "wb");
-            fwrite(file_start+3,sizeof(char),300000-(file_start-buffer),fp);
+            fwrite(file_start + 3, sizeof(char), 300000 - (file_start - buffer), fp);
             // fwrite(boundary,sizeof(char),boundarylen,fp);
             fclose(fp);
-//             }
-//             else{
-//                 printf("no encontró el borde\n");
-//             }
+            //             }
+            //             else{
+            //                 printf("no encontró el borde\n");
+            //             }
         }
-        else{
+        else
+        {
             printf("file start error\n");
         }
         return 1;
     }
-    else{
+    else
+    {
         return 0;
     }
 }
-
 
 void get_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc *r, stbi_uc *g, stbi_uc *b)
 {
@@ -227,8 +229,6 @@ void get_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc *r
     *g = image[4 * (y * imageWidth + x) + 1];
     *b = image[4 * (y * imageWidth + x) + 2];
 }
-
-
 
 void *image_main(void *context)
 {
@@ -247,9 +247,9 @@ void *image_main(void *context)
         stbi_uc r, g, b;
         unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
 
-        for (int x = 0; x < 30; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < 30; y++)
+            for (int y = 0; y < height; y++)
             {
                 get_pixel(image, width, x, y, &r, &g, &b);
                 r_sum += r;
@@ -263,34 +263,27 @@ void *image_main(void *context)
         sleep(1);
     }
 }
-        
-        
-        
-        
 
 // https://stackoverflow.com/questions/15686277/convert-rgb-to-grayscale-in-c#15686412
-double sRGB_to_linear(double x) {
-    if (x < 0.04045) return x/12.92;
-    return pow((x+0.055)/1.055, 2.4);
+double sRGB_to_linear(double x)
+{
+    if (x < 0.04045)
+        return x / 12.92;
+    return pow((x + 0.055) / 1.055, 2.4);
 }
-
 
 void RGB_to_grayscale(stbi_uc *image, int width)
 {
-    stbi_uc r,g,b;
+    stbi_uc r, g, b;
     for (int x = 0; x < 30; x++)
     {
         for (int y = 0; y < 30; y++)
         {
             get_pixel(image, width, x, y, &r, &g, &b);
-            double R_linear = sRGB_to_linear(r/255.0);
-            double G_linear = sRGB_to_linear(g/255.0);
-            double B_linear = sRGB_to_linear(b/255.0);
+            double R_linear = sRGB_to_linear(r / 255.0);
+            double G_linear = sRGB_to_linear(g / 255.0);
+            double B_linear = sRGB_to_linear(b / 255.0);
             double gray_linear = 0.2126 * R_linear + 0.7152 * G_linear + 0.0722 * B_linear;
-            
-            
         }
     }
-    
-    
 }
