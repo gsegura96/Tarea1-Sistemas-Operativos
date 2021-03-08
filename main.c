@@ -9,30 +9,22 @@
 #include <netinet/in.h>
 #include <string.h>
 #include "config.h"
-#include <gnu/libc-version.h>
+#include <math.h>
 
-// #include "multipartparser.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // Constants
 #define CONFIG_FILE "./server.conf"
 
 // Function definitions
-int server_main(int port, const char *save_folder, const char *log_file);
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file);
 int parseHTTP(char* buffer);
 
-void *memmem(const void *haystack, size_t hlen, const void *needle, size_t nlen);
-
-
-
-
-
+int server_main(int port, const char *save_folder, const char *log_file);
 
 int main(int argc, char const *argv[])
 {
-    
-
-
 
     // Create conf object
     ini_table_s *config = ini_table_create();
@@ -59,8 +51,8 @@ int main(int argc, char const *argv[])
     printf("port is: %i\n", *port);
 
     // TODO: Threads
-    server_main(*port, save_dir, log_file);
     image_main(save_dir, colors_dir, histo_dir, log_file);
+    server_main(*port, save_dir, log_file);
 
     // Destroy when the program exits
     ini_table_destroy(config);
@@ -176,40 +168,64 @@ int parseHTTP(char* buffer){
 }
 
 
-
-/*
- * The memmem() function finds the start of the first occurrence of the
- * substring 'needle' of length 'nlen' in the memory area 'haystack' of
- * length 'hlen'.
- *
- * The return value is a pointer to the beginning of the sub-string, or
- * NULL if the substring is not found.
- */
-void *memmem(const void *haystack, size_t hlen, const void *needle, size_t nlen)
+void get_pixel(stbi_uc *image, size_t imageWidth, size_t x, size_t y, stbi_uc *r, stbi_uc *g, stbi_uc *b)
 {
-    int needle_first;
-    const void *p = haystack;
-    size_t plen = hlen;
-
-    if (!nlen)
-        return NULL;
-
-    needle_first = *(unsigned char *)needle;
-
-    while (plen >= nlen && (p = memchr(p, needle_first, plen - nlen + 1)))
-    {
-        if (!memcmp(p, needle, nlen))
-            return (void *)p;
-
-        p++;
-        plen = hlen - (p - haystack);
-    }
-
-    return NULL;
+    *r = image[4 * (y * imageWidth + x) + 0];
+    *g = image[4 * (y * imageWidth + x) + 1];
+    *b = image[4 * (y * imageWidth + x) + 2];
 }
-
 
 int image_main(const char *save_folder, const char *colors_folder, const char *histo_folder, const char *log_file)
 {
+    int width, height; // image width, heigth,
+    stbi_uc *image = stbi_load("test_img/img.png", &width, &height, NULL, 4);
+    printf("w: %i\n", width);
+    printf("h: %i\n", height);
+
+    stbi_uc r, g, b;
+    unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
+
+    for (int x = 0; x < 30; x++)
+    {
+        for (int y = 0; y < 30; y++)
+        {
+            get_pixel(image, width, x, y, &r, &g, &b);
+            r_sum += r;
+            g_sum += g;
+            b_sum += b;
+        }
+    }
+
+    printf("r: %li\n", r_sum);
+    printf("g: %li\n", g_sum);
+    printf("b: %li\n", b_sum);
+
     return 0;
+}
+
+// https://stackoverflow.com/questions/15686277/convert-rgb-to-grayscale-in-c#15686412
+double sRGB_to_linear(double x) {
+    if (x < 0.04045) return x/12.92;
+    return pow((x+0.055)/1.055, 2.4);
+}
+
+
+void RGB_to_grayscale(stbi_uc *image, size_t imageWidth)
+{
+    int r,g,b;
+    for (int x = 0; x < 30; x++)
+    {
+        for (int y = 0; y < 30; y++)
+        {
+            get_pixel(image, width, x, y, &r, &g, &b);
+            double R_linear = sRGB_to_linear(r/255.0);
+            double G_linear = sRGB_to_linear(g/255.0);
+            double B_linear = sRGB_to_linear(b/255.0);
+            double gray_linear = 0.2126 * R_linear + 0.7152 * G_linear + 0.0722 * B_linear;
+            
+            
+        }
+    }
+    
+    
 }
