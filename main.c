@@ -40,6 +40,7 @@ int parseHTTP(char *buffer);
 void *image_main(void *context);
 void *server_main(void *context);
 void RGB_to_grayscale(stbi_uc *image,int height, int width);
+void equalization(stbi_uc *image,int height, int width);
 
 
 
@@ -300,8 +301,9 @@ void *image_main(void *context)
         
         
 //         stbi_write_png("test_img/img_out.png", width,  height, 4, image,4*width);
-        RGB_to_grayscale(image, height,  width);
-         
+//         RGB_to_grayscale(image, height,  width);
+        equalization(image, height,  width);
+
         stbi_uc r, g, b;
         unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
 
@@ -337,7 +339,7 @@ void RGB_to_grayscale(stbi_uc *image,int height, int width)
     {
         for (int y = 0; y < height; y++)
         {
-            get_pixel(image, width, x, y, &r, &g, &b);
+           get_pixel(image, width, x, y, &r, &g, &b);
             double R_linear = sRGB_to_linear(r / 255.0);
             double G_linear = sRGB_to_linear(g / 255.0);
             double B_linear = sRGB_to_linear(b / 255.0);
@@ -348,8 +350,76 @@ void RGB_to_grayscale(stbi_uc *image,int height, int width)
              b = round(gray_linear*255);
             
             set_pixel(image, width,  x,  y,  r,  g,  b);
-
         }
     }
     stbi_write_png("test_img/img_out_gs.png", width,  height, 4, image,4*width);
+}
+
+void equalization(stbi_uc *image,int height, int width){
+    int fi[256]={0},cuf[256]={0}, cufeq[256]={0}, i_out[256]={0};
+    stbi_uc r, g, b;
+    RGB_to_grayscale(image, height,  width);
+    
+    for (int x = 0; x < width; x++)
+    {
+        for (int y = 0; y < height; y++)
+        {
+            get_pixel(image, width, x, y, &r, &g, &b);
+            fi[r]=fi[r]+1;
+//             set_pixel(image, width,  x,  y,  r,  g,  b);
+        }
+    }
+    
+    int sum=0;
+    int i;
+   for( i = 0; i < 256; i = i + 1 ){
+       sum= sum+ fi[i];
+       cuf[i]=sum;
+   }
+   int mean = sum>>8;
+   int cuf_sum=0;
+   if((sum&255)!=0){
+       cuf_sum=1;
+    }
+    for( i = 0; i < 256; i = i + 1 ){
+       cuf_sum= mean + cuf_sum;
+       cufeq[i]=cuf_sum;
+   }
+   
+   for( i = 0; i < 256; i = i + 1 ){
+        int closest=0;
+        if(cuf[i]<=cufeq[0]){
+           i_out[i]=0;
+           continue;
+        }
+        int j;
+        for( j = 1; j < 256; j = j + 1 ){
+            if(cuf[i]==cufeq[j]){
+                i_out[i]=j; 
+                break;
+            }
+            if(cuf[i]<cufeq[j]){
+                if( (cuf[i]-cufeq[j])  >  (cuf[i]<cufeq[j-1])    ){
+                    i_out[i]=j-1; 
+                }
+                else{
+                    i_out[i]=j;
+                }
+                break;
+            }
+            if(j==255){
+                i_out[i]=255;
+            }
+        }
+   }
+   for (int x = 0; x < width; x++)
+    {
+        for (int y = 0; y < height; y++)
+        {
+            get_pixel(image, width, x, y, &r, &g, &b);
+            set_pixel(image, width,  x,  y,  i_out[r],   i_out[r],   i_out[r]);
+        }
+    }
+   stbi_write_png("test_img/img_out_equ.png", width,  height, 4, image,4*width);
+    
 }
