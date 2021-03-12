@@ -13,10 +13,13 @@
 #include <stdbool.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <libgen.h>
+
+#include "uini.h"
+#include "log.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include "uini.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -24,6 +27,7 @@
 
 // Constants
 #define CONFIG_FILE "./server.conf"
+#define PATH_MAX_STRING_SIZE 512
 // Struct to contain the configuration
 typedef struct
 {
@@ -41,10 +45,7 @@ void *image_main(void *context);
 void *server_main(void *context);
 void RGB_to_grayscale(stbi_uc *image,int height, int width);
 void equalization(stbi_uc *image,int height, int width);
-
-
-
-
+int mkdir_p(const char *dir, const mode_t mode);
 
 // Program running variable
 bool running = true;
@@ -100,8 +101,11 @@ int main(int argc, char const *argv[])
     }
 
     // Debug
+    mkdir_p(params.save_dir, 0755);
     printf("save_dir is: %s\n", params.save_dir);
+    mkdir_p(params.colors_dir, 0755);
     printf("colors_dir is: %s\n", params.colors_dir);
+    mkdir_p(params.histo_dir, 0755);
     printf("histo_dir is: %s\n", params.histo_dir);
     printf("log_file is: %s\n", params.log_file);
     printf("port is: %i\n", params.port);
@@ -256,7 +260,7 @@ char *get_smallest_file(char *directory)
     struct dirent *dir;
     struct stat st;
     unsigned long int max_size = 0;
-    char *current_file = malloc(sizeof(char) * 512);
+    char *current_file = malloc(sizeof(char) * PATH_MAX_STRING_SIZE);
     d = opendir(directory);
     if (d)
     {
@@ -266,9 +270,8 @@ char *get_smallest_file(char *directory)
             {
                 continue;
             }
-            char path[512];
+            char path[PATH_MAX_STRING_SIZE];
             strcpy(path, directory);
-            strcat(path, "/");
             strcat(path, dir->d_name);
             stat(path, &st);
 
@@ -280,7 +283,125 @@ char *get_smallest_file(char *directory)
         }
         closedir(d);
     }
+    if (max_size == 0)
+        return "\0";
     return current_file;
+}
+
+char *concat_path(char *color, char *basepath)
+{
+    char *output = malloc(sizeof(char) * PATH_MAX_STRING_SIZE);
+    strcpy(output, basepath);
+    strcat(output, color);
+    return output;
+}
+
+char *output_path_builder(char *filename, char *color, char *basepath)
+{
+    char *output = malloc(sizeof(char) * PATH_MAX_STRING_SIZE);
+    strcpy(output, basepath);
+    strcat(output, color);
+    strcat(output, "/");
+    strcat(output, filename);
+    strcat(output, ".png");
+    return output;
+}
+
+char *histo_output_path_builder(char *filename, char *basepath)
+{
+    char *output = malloc(sizeof(char) * PATH_MAX_STRING_SIZE);
+    strcpy(output, basepath);
+    strcat(output, filename);
+    strcat(output, ".png");
+    return output;
+}
+
+/* recursive mkdir */
+/* FROM: https://gist.github.com/ChisholmKyle/0cbedcd3e64132243a39 */
+int mkdir_p(const char *dir, const mode_t mode)
+{
+    char tmp[PATH_MAX_STRING_SIZE];
+    char *p = NULL;
+    struct stat sb;
+    size_t len;
+
+    /* copy path */
+    len = strnlen(dir, PATH_MAX_STRING_SIZE);
+    if (len == 0 || len == PATH_MAX_STRING_SIZE)
+    {
+        return -1;
+    }
+    memcpy(tmp, dir, len);
+    tmp[len] = '\0';
+
+    /* remove trailing slash */
+    if (tmp[len - 1] == '/')
+    {
+        tmp[len - 1] = '\0';
+    }
+
+    /* check if path exists and is a directory */
+    if (stat(tmp, &sb) == 0)
+    {
+        if (S_ISDIR(sb.st_mode))
+        {
+            return 0;
+        }
+    }
+
+    /* recursive mkdir */
+    for (p = tmp + 1; *p; p++)
+    {
+        if (*p == '/')
+        {
+            *p = 0;
+            /* test path */
+            if (stat(tmp, &sb) != 0)
+            {
+                /* path does not exist - create directory */
+                if (mkdir(tmp, mode) < 0)
+                {
+                    return -1;
+                }
+            }
+            else if (!S_ISDIR(sb.st_mode))
+            {
+                /* not a directory */
+                return -1;
+            }
+            *p = '/';
+        }
+    }
+    /* test path */
+    if (stat(tmp, &sb) != 0)
+    {
+        /* path does not exist - create directory */
+        if (mkdir(tmp, mode) < 0)
+        {
+            return -1;
+        }
+    }
+    else if (!S_ISDIR(sb.st_mode))
+    {
+        /* not a directory */
+        return -1;
+    }
+    return 0;
+}
+
+char *filename_without_extension(char *file_name)
+{
+    char *remaining_str;
+    char *last_ext;
+    if (file_name == NULL)
+        return NULL;
+    if ((remaining_str = malloc(strlen(file_name) + 1)) == NULL)
+        return NULL;
+    strcpy(remaining_str, basename(file_name));
+    last_ext = strrchr(remaining_str, '.');
+    if (last_ext != NULL)
+        *last_ext = '\0';
+    return remaining_str;
 }
 
 void *image_main(void *context)
@@ -290,19 +411,23 @@ void *image_main(void *context)
     printf("PORT FROM IMG THREAD: %i\n", params->port);
     printf("LOGFILE FROM IMG THREAD: %s\n", params->log_file);
 
-    printf("Smallest file: %s\n", get_smallest_file("."));
+    // Create folders if they don't exist
+    mkdir_p(concat_path("r", params->colors_dir), 0755);
+    mkdir_p(concat_path("g", params->colors_dir), 0755);
+    mkdir_p(concat_path("b", params->colors_dir), 0755);
 
     while (running)
     {
+        char *smallest_file = get_smallest_file(params->save_dir);
+        if (smallest_file[0] == '\0')
+        {
+            puts("No file found in save_dir");
+        }
+        printf("Smallest file: %s\n", get_smallest_file(params->save_dir));
         int width, height; // image width, heigth,
-        stbi_uc *image = stbi_load("test_img/img.png", &width, &height, NULL, 4);
+        stbi_uc *image = stbi_load(get_smallest_file(params->save_dir), &width, &height, NULL, 4);
         printf("w: %i\n", width);
         printf("h: %i\n", height);
-        
-        
-//         stbi_write_png("test_img/img_out.png", width,  height, 4, image,4*width);
-//         RGB_to_grayscale(image, height,  width);
-        equalization(image, height,  width);
 
         stbi_uc r, g, b;
         unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
@@ -320,7 +445,32 @@ void *image_main(void *context)
         printf("r: %li\n", r_sum);
         printf("g: %li\n", g_sum);
         printf("b: %li\n", b_sum);
-        sleep(10);
+        printf("output: %s\n", output_path_builder(filename_without_extension(smallest_file), "b", params->colors_dir));
+
+        // Case Red
+        if (r_sum > g_sum && r_sum > b_sum)
+        {
+            puts("R!!");
+            stbi_write_png(output_path_builder(filename_without_extension(smallest_file), "r", params->colors_dir), width, height, 4, image, 4 * width);
+        }
+        // Case Green
+        else if (g_sum > r_sum && g_sum > b_sum)
+        {
+            puts("GREEN!!");
+            stbi_write_png(output_path_builder(filename_without_extension(smallest_file), "g", params->colors_dir), width, height, 4, image, 4 * width);
+        }
+        // Case Blue
+        else
+        {
+            puts("BLUE!!");
+            stbi_write_png(output_path_builder(filename_without_extension(smallest_file), "b", params->colors_dir), width, height, 4, image, 4 * width);
+        }
+
+        equalization(image, height, width);
+
+        stbi_write_png(histo_output_path_builder(filename_without_extension(smallest_file), params->histo_dir), width, height, 4, image, 4 * width);
+
+        sleep(1);
     }
 }
 
@@ -352,7 +502,6 @@ void RGB_to_grayscale(stbi_uc *image,int height, int width)
             set_pixel(image, width,  x,  y,  r,  g,  b);
         }
     }
-    stbi_write_png("test_img/img_out_gs.png", width,  height, 4, image,4*width);
 }
 
 void equalization(stbi_uc *image,int height, int width){
@@ -420,6 +569,4 @@ void equalization(stbi_uc *image,int height, int width){
             set_pixel(image, width,  x,  y,  i_out[r],   i_out[r],   i_out[r]);
         }
     }
-   stbi_write_png("test_img/img_out_equ.png", width,  height, 4, image,4*width);
-    
 }
