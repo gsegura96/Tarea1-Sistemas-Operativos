@@ -3,7 +3,7 @@ Description=ImageServer
 After=network.target
 nano
 [Service]
-Type=oneshot
+Type=simple
 RemainAfterExit=true
 WorkingDirectory=/opt/ImageServer
 ExecStart=/opt/ImageServer/ImageServer
