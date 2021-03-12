@@ -28,6 +28,11 @@
 // Constants
 #define CONFIG_FILE "./server.conf"
 #define PATH_MAX_STRING_SIZE 512
+#define BUFFER_SIZE 1024
+
+
+
+
 // Struct to contain the configuration
 typedef struct
 {
@@ -39,8 +44,7 @@ typedef struct
 } ConfParams;
 
 // Function definitions
-int parseHTTP(char *buffer);
-
+int parseHTTP(int* new_socket, char *buffer);
 void *image_main(void *context);
 void *server_main(void *context);
 void RGB_to_grayscale(stbi_uc *image,int height, int width);
@@ -176,12 +180,12 @@ void *server_main(void *context)
         }
 
         // char buffer[3000000] = {0};
-        char *buffer = (char *)malloc(300000);
-        memset(buffer, '\0', sizeof(char) * 300000);
+        char *buffer = (char *)malloc(BUFFER_SIZE);
+        memset(buffer, '\0', sizeof(char) * BUFFER_SIZE);
 
-        valread = read(new_socket, buffer, 300000);
         
-        parseHTTP(buffer);
+        
+        parseHTTP(&new_socket,buffer);
 
         // printf("________________________\n\n\n%s\n", buffer);
         free(buffer);
@@ -191,18 +195,19 @@ void *server_main(void *context)
     }
 }
 
-int parseHTTP(char *buffer)
+int parseHTTP(int* new_socket, char *buffer)
 {
-    printf("XXXXXXXXXXXXXXXXXXXXXX BUFFER XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n%s\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx\n", buffer);
+    long valread;
+    int content_length=0;
+    valread = read(*new_socket, buffer, BUFFER_SIZE);
     char *s0, *s1;
     s0 = strstr(buffer, "boundary=");
     int l0 = strlen("boundary=");
-    printf("funcion llamada\n");
 
     if (s0 != NULL)
     {
-        
-        printf("boundary encontrado\n");
+    
+//         printf("boundary encontrado\n");
         s1 = strstr(s0, "\n");
         char boundary[45];
         memset(boundary, '\0', sizeof(boundary));
@@ -210,29 +215,46 @@ int parseHTTP(char *buffer)
 
         printf("BOUNDARY: %s\n", boundary);
         int boundarylen = strlen(boundary);
+        
+        
+//         int content_length;
+        char *pcontent = strstr(buffer, "Content-Length:");
+        int ret = sscanf(pcontent, "Content-Length: %d\r\n", &content_length);
+        printf("NUM: %i\n", content_length);
+        
+        
         char *file_start = strstr(buffer, "Content-Disposition:");
+        printf("BUFFER IN\n\n\n%s\n______________________________\n", buffer);
+
         //         char *file_start =  strstr(buffer, "PNG");
-        1+1;
+        if(file_start == NULL){
+            valread = read(*new_socket, buffer, BUFFER_SIZE);
+            printf("BUFFER IF\n\n\n%s\n______________________________\n", buffer);
+        }
+        
+        file_start = strstr(buffer, "Content-Disposition:");
+        
         if (file_start != NULL)
         {
             printf("XXXXXXXXXXXXXXXXXXXXXX INICIO ENCONTRADO XXXXXXXXXXXXXXXx\n");
             file_start = strstr(file_start + 1, "\n");
             file_start = strstr(file_start + 1, "\n");
 
-            //             printf("XXXXXXXXXXXXXXXXXXXXXX BUFFER FS XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n%s\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx\n", buffer);
-            //             char *file_end = strstr(file_start ,boundary);
-            //             char *file_end = memmem(file_start, sizeof(char)*(300000), boundary, sizeof(char)*boundarylen);
-            1 + 1;
-            //             if (file_end!= NULL){
+            
             FILE *fp;
-            fp = fopen("test_file.png", "wb");
-            fwrite(file_start + 3, sizeof(char), 300000 - (file_start - buffer), fp);
-            // fwrite(boundary,sizeof(char),boundarylen,fp);
+            fp = fopen("test_file3.png", "wb");
+            fwrite(file_start + 3, sizeof(char), BUFFER_SIZE - (file_start - buffer), fp);
+            
+            if (content_length>=BUFFER_SIZE){
+                int n=1;
+                while(content_length>BUFFER_SIZE*n){
+                    valread = read(*new_socket, buffer, BUFFER_SIZE);
+                    fwrite(buffer, sizeof(char), BUFFER_SIZE, fp);
+                    printf("leyendo otra vez el socket%d\n",n);
+                    n=n+1;
+                }
+            }
             fclose(fp);
-            //             }
-            //             else{
-            //                 printf("no encontró el borde\n");
-            //             }
         }
         else
         {

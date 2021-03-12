@@ -1,0 +1,500 @@
+   25  gcc test.c -o test && ./test 
+   26  gcc test.c -o test && ./test 
+   27  gcc test.c -o test && ./test 
+   28  gcc test.c -o test && ./test 
+   29  gcc test.c -o test && ./test 
+   30  gcc test.c -o test && ./test 
+   31  gcc test.c -o test && ./test 
+   32  gcc test.c -o test && ./test 
+   33  gcc test.c -o test && ./test 
+   34  gcc test.c -o test 
+   35  gcc test.c -o test && ./test 
+   36  gcc test.c -o test && ./test 
+   37  gcc test.c -o test && ./test 
+   38  gcc test.c -o test && ./test 
+   39  gcc test.c -o test && ./test 
+   40  gcc test.c -o test
+   41  ./test 
+   42  ./test 
+   43  gcc test.c -o test
+   44  ./test 
+   45  ./test 
+   46  ./test 
+   47  ./test 
+   48  netstat -a -b
+   49  ./test 
+   50  netstat -a -b
+   51  gcc test.c -o test
+   52  gcc test.c -o test & ./test 
+   53  gcc test.c -o test && ./test 
+   54  gcc test.c -o test && ./test 
+   55  gcc test.c -o test && ./test 
+   56  gcc test.c -o test && ./test 
+   57  gcc test.c -o test && ./test 
+   58  gcc test.c -o test && ./test 
+   59  gcc test.c -o test && ./test 
+   60  gcc test.c -o test && ./test 
+   61  gcc test.c -o test && ./test 
+   62  gcc test.c -o test && ./test 
+   63  gcc test.c -o test && ./test 
+   64  gcc test.c -o test && ./test 
+   65  gcc test.c -o test && ./test 
+   66  gcc test.c -o test && ./test 
+   67  gcc test.c -o test && ./test 
+   68  gcc test.c -o test && ./test 
+   69  gcc test.c -o test && ./test 
+   70  gcc test.c -o test && ./test 
+   71  gcc test.c -o test && ./test 
+   72  gcc test.c -o test && ./test 
+   73  gcc test.c -o test && ./test 
+   74  gcc test.c -o test && ./test 
+   75  gcc test.c -o test && ./test 
+   76  gcc test.c -o test && ./test 
+   77  gcc test.c -o test && ./test 
+   78  gcc test.c -o test && ./test 
+   79  gcc test.c -o test && ./test 
+   80  gcc test.c -o test && ./test 
+   81  gcc test.c -o test && ./test 
+   82  gcc test.c -o test && ./test 
+   83  gcc test.c -o test && ./test 
+   84  gcc test.c -o test && ./test 
+   85  gcc test.c -o test && ./test 
+   86  gcc test.c -o test && ./test 
+   87  cd t
+   88  cd Tarea1-Sistemas-Operativos/.
+   89  ls
+   90  make 
+   91  make 
+   92  make 
+   93  make 
+   94  make 
+   95  make 
+   96  ls
+   97  ./ImageServer 
+   98  make clean
+   99  ./ImageServer 
+  100  make 
+  101  make 
+  102  ./ImageServer 
+  103  make 
+  104  make clean
+  105  make 
+  106  ./ImageServer 
+  107  ./ImageServer 
+  108  make clean
+  109  make 
+  110  make && ./ImageServer 
+  111  make && ./ImageServer 
+  112  make clean
+  113  make && ./ImageServer 
+  114  cat makefile 
+  115  nano makefile 
+  116  gcc ImageServer 
+  117  make && ./ImageServer 
+  118  gcc ImageServer 
+  119  make clean
+  120  make && ./ImageServer 
+  121  make clean
+  122  make && ./ImageServer 
+  123  make clean
+  124  make && ./ImageServer 
+  125  make && ./ImageServer 
+  126  make && ./ImageServer 
+  127  make && ./ImageServer 
+  128  make && ./ImageServer 
+  129  make && ./ImageServer 
+  130  make && ./ImageServer 
+  131  make && ./ImageServer 
+  132  make && ./ImageServer 
+  133  make && ./ImageServer 
+  134  make && ./ImageServer 
+  135  make && ./ImageServer 
+  136  make && ./ImageServer 
+  137  make && ./ImageServer 
+  138  make && ./ImageServer 
+  139  make && ./ImageServer 
+  140  make && ./ImageServer 
+  141  make && ./ImageServer 
+  142  make && ./ImageServer 
+  143  make && ./ImageServer 
+  144  make && ./ImageServer 
+  145  make && ./ImageServer 
+  146  make && ./ImageServer 
+  147  make && ./ImageServer 
+  148  make && ./ImageServer 
+  149  make && ./ImageServer 
+  150  make && ./ImageServer 
+  151  make && ./ImageServer 
+  152  make && ./ImageServer 
+  153  make && ./ImageServer 
+  154  make && ./ImageServer 
+  155  make && ./ImageServer 
+  156  make && ./ImageServer 
+  157  make && ./ImageServer 
+  158  make && ./ImageServer 
+  159  make && ./ImageServer 
+  160  make && ./ImageServer 
+  161  make && ./ImageServer 
+  162  make && ./ImageServer 
+  163  make && ./ImageServer 
+  164  make && ./ImageServer 
+  165  make && ./ImageServer 
+  166  make && ./ImageServer 
+  167  make && ./ImageServer 
+  168  make && ./ImageServer 
+  169  make && ./ImageServer 
+  170  make && ./ImageServer 
+  171  make && ./ImageServer 
+  172  /home/gsegura/Documents/TEC/2021/S1/operativos/tareas/1/Tarea1-Sistemas-Operativos/ImageServer 
+  173  jupyter lab
+  174   kdevelop! -s "{6ba96841-1f97-40be-9ebb-f1acc7dc1ec0}"
+  175   kdevelop! -s "{6ba96841-1f97-40be-9ebb-f1acc7dc1ec0}"
+  176  python
+  177  yay jitsi
+  178   kdevelop! -s "{6ba96841-1f97-40be-9ebb-f1acc7dc1ec0}"
+  179   kdevelop! -s "{6ba96841-1f97-40be-9ebb-f1acc7dc1ec0}"
+  180  cd /home/gsegura/Documents/TEC/2021/S1/operativos/tareas/1/Tarea1-Sistemas-Operativos
+  181  yay kdevelop
+  182  yay okteta
+  183  make && ./ImageServer 
+  184  which gdb
+  185  make && ./ImageServer 
+  186  make && ./ImageServer 
+  187  ls
+  188  cd ..
+  189  ls
+  190  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  191  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  192  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  193  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  194  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  195  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  196  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  197  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  198  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  199  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  200  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  201  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  202  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  203  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  204  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  205  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  206  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  207  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  208  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  209  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  210  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  211  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  212  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  213  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  214  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  215  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  216  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  217  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  218  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  219  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  220  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  221  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  222  curl -X POST -F 'image=@./test.c' http://localhost:1717
+  223  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  224  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  225  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  226  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  227  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  228  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  229  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  230  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  231  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  232  curl -X POST -F 'image=@./rect16.png' http://localhost:1717curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  233  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  234  cd Tarea1-Sistemas-Operativos/
+  235  git status
+  236  git add .
+  237  git commit 
+  238  git pull
+  239  eval "$(ssh-agent -s)"
+  240  ssh-add ~/.ssh/github
+  241  git pull
+  242  git add .
+  243  git commit 
+  244  git commit 
+  245  git pull
+  246  git add .
+  247  git commit 
+  248  git push
+  249  git commit 
+  250  gti add .
+  251  git add .
+  252  git commit 
+  253  git pull
+  254  git push
+  255  git pull
+  256  git add .
+  257  git commit 
+  258  git pull
+  259  git push
+  260  git add .
+  261  git commit 
+  262  git push
+  263  git pull
+  264  git commit 
+  265  git add .
+  266  git commit 
+  267  git push
+  268  git add .
+  269  git commit 
+  270  git push
+  271  mkdir test
+  272  cd test
+  273  nano server.c
+  274   gcc server.c -o server 
+  275  ./server
+  276  kate server.c 
+  277   gcc server.c -o server 
+  278  kate server.c 
+  279   gcc server.c -o server 
+  280   gcc server.c -o server 
+  281  kate server.c 
+  282   gcc server.c -o server 
+  283  ./server
+  284  kate server.c &
+  285   gcc server.c -o server 
+  286  ./server
+  287   gcc server.c -o server 
+  288  ./server
+  289   gcc server.c -o server 
+  290  ./server
+  291   gcc server.c -o server 
+  292  ./server
+  293   gcc server.c -o server 
+  294  ./server
+  295  chmod 400 ~/.ssh/taller1_SO
+  296  cat ~/.ssh/taller1_SO.pub 
+  297  ssh-add ~/.ssh/taller1_SO
+  298  ssh yo@200~146.148.93.30
+  299  ssh yo@146.148.93.30
+  300  scp ./server.c  yo@146.148.93.30:~/
+  301  ssh yo@146.148.93.30
+  302  cd ..
+  303  cd ..
+  304  cd ..
+  305  cd ..
+  306  cd talleres/1/
+  307  ls
+  308  kate factorial.py
+  309  python -i factorial.py 
+  310  kate factorial.py
+  311  python -i factorial.py 
+  312  kate factorial.py
+  313  python  factorial.py 
+  314  ls
+  315  gcc -o factorial.c 
+  316  gcc  factorial.c  -0
+  317  gcc  factorial.c  -o
+  318  gcc  factorial.c 
+  319  gcc  factorial.c -o factorial
+  320  ./factorial 
+  321  gcc  factorial.c -o factorial
+  322  ./factorial 
+  323  gcc  factorial.c -o factorial
+  324  ./factorial 
+  325  gcc  factorial.c -o factorial
+  326  ./factorial 
+  327  gcc  factorial.c -o factorial
+  328  gcc  factorial.c -o factorial
+  329  ./factorial 
+  330  gcc  factorial.c -o factorial
+  331  ./factorial 
+  332  gcc  factorial.c -o factorial
+  333  ./factorial 
+  334  gcc  factorial.c -o factorial
+  335  ./factorial 
+  336  gcc  factorial.c -o factorial
+  337  ./factorial 
+  338  gcc  factorial.c -o factorial
+  339  ./factorial 
+  340  gcc  factorial.c -o factorial
+  341  ./factorial 
+  342  gcc  factorial.c -o factorial
+  343  ./factorial 
+  344  gcc  factorial.c -o factorial
+  345  ./factorial 
+  346  gcc  factorial.c -o factorial
+  347  ./factorial 
+  348  gcc  factorial.c -o factorial
+  349  ./factorial 
+  350  gcc  factorial.c -o factorial
+  351  gcc  factorial.c -o factorial
+  352  ./factorial 
+  353  gcc  factorial.c -o factorial
+  354  ./factorial 
+  355  python  factorial.py 
+  356  python  -i factorial.py 
+  357  gcc  factorial.c -o factorial
+  358  ./factorial 
+  359  gcc  factorial.c -o factorial
+  360  ./factorial 
+  361  time python factorial.py 
+  362  time ./factorial 
+  363  gcc  factorial.c -o factorial
+  364  time ./factorial 
+  365  gcc  factorial.c -o factorial
+  366  time ./factorial 
+  367  ls
+  368  scp ./factorial.py   yo@146.148.93.30:~/
+  369  scp ./factorial.c   yo@146.148.93.30:~/
+  370  ssh yo@146.148.93.30
+  371  scp ./factorial.py   yo@146.148.93.30:~/ejemplo
+  372  scp ./factorial.c   yo@146.148.93.30:~/ejemplo
+  373  ssh yo@146.148.93.30
+  374  scp ./factorial.py   yo@146.148.93.30:~/ejemplo
+  375  scp ./factorial.c   yo@146.148.93.30:~/ejemplo
+  376  ssh yo@146.148.93.30
+  377  ls
+  378  time python factorial.py 
+  379  time python factorial.py 
+  380  time python factorial.py 
+  381  time python factorial.py 
+  382  time python factorial.py 
+  383  time python factorial.py 
+  384  gcc  factorial.c -o factorial
+  385  time ./factorial 
+  386  time ./factorial 
+  387  time ./factorial 
+  388  time ./factorial 
+  389  time ./factorial 
+  390  time ./factorial 
+  391  time ./factorial 
+  392  time ./factorial 
+  393  time ./factorial 
+  394  time ./factorial 
+  395  time ./factorial 
+  396  time ./factorial 
+  397  time ./factorial 
+  398  time ./factorial 
+  399  time ./factorial 
+  400  time ./factorial 
+  401  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  402  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  403  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  404  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  405  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  406  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  407  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  408  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  409  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  410  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  411  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  412  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  413  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  414  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  415  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  416  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  417  curl -X POST -F 'image=@./rect16.png' http://localhost:1717
+  418  curl -X POST -F 'image=@./rect1.png' http://localhost:1717
+  419  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  420  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  421  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  422  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  423  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  424  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  425  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  426  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  427  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  428  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  429  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  430  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  431  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  432  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  433  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  434  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  435  curl -X POST -F 'image=@./rect2.png' http://localhost:1717
+  436  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  437  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  438  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  439  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  440  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  441  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  442  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  443  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  444  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  445  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  446  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  447  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  448  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  449  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  450  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  451  curl -X POST -F 'image=@./rect2.png' http://localhost:8085
+  452  curl -X POST -F 'image=@./test.c' http://localhost:8085
+  453  ls
+  454  curl -X POST -F 'image=@./uini.c' http://localhost:8085
+  455  curl -X POST -F 'image=@./uini.h' http://localhost:8085
+  456  curl -X POST -F 'image=@./uini.h' http://localhost:8085
+  457  cd ..
+  458  ls
+  459  jupyter lab
+  460  yay signumone
+  461  alien
+  462  cd Downloads/
+  463  dpkg -i signumone-ks-3.1.3.deb 
+  464  sudo dpkg -i signumone-ks-3.1.3.deb 
+  465   kdevelop! -s "{dd022553-0b79-4f34-904c-6146d73e97fb}"
+  466   kdevelop! -s "{dd022553-0b79-4f34-904c-6146d73e97fb}"
+  467   kdevelop! -s "{dd022553-0b79-4f34-904c-6146d73e97fb}"
+  468   kdevelop! -s "{6ba96841-1f97-40be-9ebb-f1acc7dc1ec0}"
+  469   kdevelop! -s "{dd022553-0b79-4f34-904c-6146d73e97fb}"
+  470   kdevelop! -s "{21328940-55ad-49eb-a4e0-4bbf86d781b4}"
+  471   kdevelop! -s "{21328940-55ad-49eb-a4e0-4bbf86d781b4}"
+  472  cd Ejercicio1
+  473  ls
+  474  ./hilos1 
+  475  nano hilos1.c 
+  476  make
+  477  ./hilos1 
+  478  cd ..
+  479  cd Ejercicio2
+  480  ./hilos2 
+  481  time ./hilos2 
+  482  time ./hilos2 
+  483  time ./hilos2 
+  484  time ./hilos2 
+  485  time ./hilos2 
+  486  time ./hilos2 
+  487  time ./hilos2 
+  488  time ./hilos2 
+  489  time ./hilos2 
+  490  time ./hilos2 
+  491  make sin_mutex 
+  492  ls
+  493  make sin_mutex 
+  494  time ./hilos2_sin_mutex 
+  495  time ./hilos2_sin_mutex 
+  496  time ./hilos2_sin_mutex 
+  497  time ./hilos2_sin_mutex 
+  498  time ./hilos2_sin_mutex 
+  499  time ./hilos2_sin_mutex 
+  500  Image
+  501  ls /opt/
+  502  /opt/ImageServer/ImageServer
+  503  ImageServer 
+  504  ls /opt/
+  505  sudo nano /opt/ImageServer/server.conf 
+  506  tail /tmp/ImageServer/log.log
+  507  ls /tmp/ImageServer/
+  508* tail /var/l
+  509  tail /tmp/ImageServer/log.log
+  510  tail /tmp/ImageServer/
+  511  ls /tmp/ImageServer/
+  512  tail /tmp/ImageServer/
+  513  tail /tmp/ImageServer/log.log
+  514  ls /tmp/ImageServer/
+  515  ls /tmp/ImageServer/
+  516  tail /tmp/ImageServer/log.log
+  517  ls /root/
+  518  ls /root/
+  519  cd test
+  520  ls
+  521  ./server 
+  522  ncat 8085
+  523  ncat localhost:8085
+  524  history >> history.txt
