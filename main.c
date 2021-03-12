@@ -55,6 +55,7 @@ void handle_stop(int signum)
 {
     log_info("Exiting from ImageServer...");
     running = false;
+    exit(0);
 }
 // Handle the conf file
 void conf_handler(const char *section, const char *key, const char *value, void *params_pointer)
