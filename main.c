@@ -200,58 +200,43 @@ int parseHTTP(int* new_socket, char *buffer)
     long valread;
     int content_length=0;
     valread = read(*new_socket, buffer, BUFFER_SIZE);
+    
+    printf("____________BUFFER____________\n\n\n%s\n___________________________\n", buffer);
+    
     char *s0, *s1;
-    s0 = strstr(buffer, "boundary=");
-    int l0 = strlen("boundary=");
+    s0 = strstr(buffer, "x-www-form-urlencoded");
+    int l0 = strlen("x-www-form-urlencoded");
 
     if (s0 != NULL)
     {
-    
-//         printf("boundary encontrado\n");
-        s1 = strstr(s0, "\n");
-        char boundary[45];
-        memset(boundary, '\0', sizeof(boundary));
-        strncpy(boundary, s0 + l0, s1 - s0 - l0);
-
-        printf("BOUNDARY: %s\n", boundary);
-        int boundarylen = strlen(boundary);
-        
-        
-//         int content_length;
         char *pcontent = strstr(buffer, "Content-Length:");
         int ret = sscanf(pcontent, "Content-Length: %d\r\n", &content_length);
         printf("NUM: %i\n", content_length);
         
         
-        char *file_start = strstr(buffer, "Content-Disposition:");
-        printf("BUFFER IN\n\n\n%s\n______________________________\n", buffer);
-
-        //         char *file_start =  strstr(buffer, "PNG");
-        if(file_start == NULL){
-            valread = read(*new_socket, buffer, BUFFER_SIZE);
-            printf("BUFFER IF\n\n\n%s\n______________________________\n", buffer);
-        }
-        
-        file_start = strstr(buffer, "Content-Disposition:");
+        char *file_start = strstr(buffer, "Content-Type:");
         
         if (file_start != NULL)
         {
-            printf("XXXXXXXXXXXXXXXXXXXXXX INICIO ENCONTRADO XXXXXXXXXXXXXXXx\n");
-            file_start = strstr(file_start + 1, "\n");
             file_start = strstr(file_start + 1, "\n");
 
             
             FILE *fp;
             fp = fopen("test_file3.png", "wb");
-            fwrite(file_start + 3, sizeof(char), BUFFER_SIZE - (file_start - buffer), fp);
-            
-            if (content_length>=BUFFER_SIZE){
+//             fwrite(file_start+3, sizeof(char), BUFFER_SIZE - (file_start+3 - buffer), fp);
+            long read_bytes=0;
+            if (content_length>=read_bytes){
                 int n=1;
-                while(content_length>BUFFER_SIZE*n){
+                while(content_length>read_bytes){
                     valread = read(*new_socket, buffer, BUFFER_SIZE);
-                    fwrite(buffer, sizeof(char), BUFFER_SIZE, fp);
-                    printf("leyendo otra vez el socket%d\n",n);
+                    fwrite(buffer, sizeof(char), valread, fp);
+                    printf("leyendo otra vez el socket%d   bytes%ld\n",n, valread);
                     n=n+1;
+                    read_bytes=read_bytes+valread;
+                    int cont=0;
+//                     for(cont=0;cont <10000000;cont=cont+1){
+//                         int a7=3+5;
+//                     }
                 }
             }
             fclose(fp);
