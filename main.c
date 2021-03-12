@@ -210,9 +210,8 @@ int parseHTTP(int* new_socket, char* buffer, const char* save_dir)
     {
         char *pcontent = strstr(buffer, "Content-Length:");
         int ret = sscanf(pcontent, "Content-Length: %d\r\n", &content_length);
-        printf("NUM: %i\n", content_length);
-        
-        
+        log_debug("Content-Length: %i", content_length);
+
         char *file_start = strstr(buffer, "Content-Type:");
         
         if (file_start != NULL)
@@ -231,17 +230,23 @@ int parseHTTP(int* new_socket, char* buffer, const char* save_dir)
             
             
             fp = fopen(sbuf, "wb");
-            long read_bytes=0;
+            log_info("Writing to: %s", sbuf);
+            long read_bytes = 0;
             while(content_length>read_bytes){
                 valread = read(*new_socket, buffer, BUFFER_SIZE);
                 fwrite(buffer, sizeof(char), valread, fp);
                 read_bytes=read_bytes+valread;
             }
             fclose(fp);
+            if (read_bytes == 0)
+            {
+                log_warn("0 bytes read, file removed");
+                remove(sbuf);
+            }
         }
         else
         {
-            printf("file start error\n");
+            log_error("file start error");
         }
         return 1;
     }
