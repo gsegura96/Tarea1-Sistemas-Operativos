@@ -53,7 +53,7 @@ struct sigaction action;
 // Handle stop
 void handle_stop(int signum)
 {
-    puts("Exiting from ImageServer...");
+    log_info("Exiting from ImageServer...");
     running = false;
 }
 // Handle the conf file
@@ -100,15 +100,18 @@ int main(int argc, char const *argv[])
         return EXIT_FAILURE;
     }
 
+    // Setup logging
+    FILE *log_file = fopen(params.log_file, "a");
+    log_add_fp(log_file, 0);
+
     // Debug
     mkdir_p(params.save_dir, 0755);
-    printf("save_dir is: %s\n", params.save_dir);
+    log_info("save_dir is: %s", params.save_dir);
     mkdir_p(params.colors_dir, 0755);
-    printf("colors_dir is: %s\n", params.colors_dir);
+    log_info("colors_dir is: %s", params.colors_dir);
     mkdir_p(params.histo_dir, 0755);
-    printf("histo_dir is: %s\n", params.histo_dir);
-    printf("log_file is: %s\n", params.log_file);
-    printf("port is: %i\n", params.port);
+    log_info("histo_dir is: %s", params.histo_dir);
+    log_info("port is: %i", params.port);
 
     // Main threads
     pthread_t image_thread;
@@ -126,8 +129,8 @@ void *server_main(void *context)
 {
     ConfParams *params = context;
 
-    printf("PORT FROM SERVER THREAD: %i\n", params->port);
-    printf("LOGFILE FROM SERVER THREAD: %s\n", params->log_file);
+    log_debug("PORT FROM SERVER THREAD: %i", params->port);
+    log_debug("LOGFILE FROM SERVER THREAD: %s", params->log_file);
 
     int server_fd, new_socket;
     long valread;
@@ -162,7 +165,7 @@ void *server_main(void *context)
     }
     while (running)
     {
-        printf("\n+++++++ Waiting for new connection ++++++++\n\n");
+        log_info("+++++++ Waiting for new connection ++++++++");
         if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
         {
             perror("In accept");
@@ -180,7 +183,7 @@ void *server_main(void *context)
         // printf("________________________\n\n\n%s\n", buffer);
         free(buffer);
         write(new_socket, hello, strlen(hello));
-        printf("------------------Hello message sent-------------------");
+        log_info("------------------Hello message sent-------------------");
         close(new_socket);
     }
 }
@@ -408,8 +411,8 @@ void *image_main(void *context)
 {
     ConfParams *params = context;
 
-    printf("PORT FROM IMG THREAD: %i\n", params->port);
-    printf("LOGFILE FROM IMG THREAD: %s\n", params->log_file);
+    log_debug("PORT FROM IMG THREAD: %i", params->port);
+    log_debug("LOGFILE FROM IMG THREAD: %s", params->log_file);
 
     // Create folders if they don't exist
     mkdir_p(concat_path("r", params->colors_dir), 0755);
@@ -421,13 +424,15 @@ void *image_main(void *context)
         char *smallest_file = get_smallest_file(params->save_dir);
         if (smallest_file[0] == '\0')
         {
-            puts("No file found in save_dir");
+            log_info("No file found in save_dir, skipping");
+            sleep(5);
+            continue;
         }
-        printf("Smallest file: %s\n", get_smallest_file(params->save_dir));
+        log_info("Smallest file: %s\n", get_smallest_file(params->save_dir));
         int width, height; // image width, heigth,
         stbi_uc *image = stbi_load(get_smallest_file(params->save_dir), &width, &height, NULL, 4);
-        printf("w: %i\n", width);
-        printf("h: %i\n", height);
+        log_debug("w: %i", width);
+        log_debug("h: %i", height);
 
         stbi_uc r, g, b;
         unsigned long int r_sum = 0, g_sum = 0, b_sum = 0;
@@ -442,34 +447,36 @@ void *image_main(void *context)
                 b_sum += b;
             }
         }
-        printf("r: %li\n", r_sum);
-        printf("g: %li\n", g_sum);
-        printf("b: %li\n", b_sum);
-        printf("output: %s\n", output_path_builder(filename_without_extension(smallest_file), "b", params->colors_dir));
+        log_debug("r: %li", r_sum);
+        log_debug("g: %li", g_sum);
+        log_debug("b: %li", b_sum);
+        log_debug("output colors: %s", output_path_builder(filename_without_extension(smallest_file), "b", params->colors_dir));
 
         // Case Red
         if (r_sum > g_sum && r_sum > b_sum)
         {
-            puts("R!!");
+            log_info("RED!!");
             stbi_write_png(output_path_builder(filename_without_extension(smallest_file), "r", params->colors_dir), width, height, 4, image, 4 * width);
         }
         // Case Green
         else if (g_sum > r_sum && g_sum > b_sum)
         {
-            puts("GREEN!!");
+            log_info("GREEN!!");
             stbi_write_png(output_path_builder(filename_without_extension(smallest_file), "g", params->colors_dir), width, height, 4, image, 4 * width);
         }
         // Case Blue
         else
         {
-            puts("BLUE!!");
+            log_info("BLUE!!");
             stbi_write_png(output_path_builder(filename_without_extension(smallest_file), "b", params->colors_dir), width, height, 4, image, 4 * width);
         }
 
         equalization(image, height, width);
-
+        log_debug("Equalization done");
+        log_debug("output eq: %s", histo_output_path_builder(filename_without_extension(smallest_file), params->histo_dir));
         stbi_write_png(histo_output_path_builder(filename_without_extension(smallest_file), params->histo_dir), width, height, 4, image, 4 * width);
 
+        remove(smallest_file);
         sleep(1);
     }
 }

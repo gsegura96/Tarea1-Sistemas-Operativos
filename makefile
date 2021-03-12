@@ -1,4 +1,4 @@
-OBJS	= main.o 
+OBJS	= main.o  log.o
 SOURCE	= main.c log.c
 HEADER	= config.h stb_image.h uini.h stb_image_write.h log.h
 OUT	= ImageServer
