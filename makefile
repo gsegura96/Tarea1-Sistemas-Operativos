@@ -12,15 +12,15 @@ all: $(OBJS)
 clean:
 	rm -f $(OBJS) $(OUT)
 install:
-	mkdir /opt/$(OUT)
-	install -m 557 $(OUT) /opt/$(OUT)
-	ln -s /opt/$(OUT)/$(OUT) /usr/bin/$(OUT)
+	mkdir /etc/server
+	install -m 557 $(OUT) /etc/server/
+	ln -s /etc/server/$(OUT) /usr/bin/$(OUT)
 	install -m 755 ImageServer.service /etc/systemd/system/ImageServer.service
-	install -m 755 server.conf /opt/$(OUT)/
+	install -m 755 server.conf /etc/server/
 	systemctl enable ImageServer.service
 
 uninstall:
-	rm -rf /opt/$(OUT)
+	rm -rf /etc/server
 	rm /usr/bin/$(OUT)
 	systemctl disable ImageServer.service
 	rm /etc/systemd/system/ImageServer.service
