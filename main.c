@@ -14,7 +14,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <libgen.h>
-
+#include <time.h>
 #include "uini.h"
 #include "log.h"
 
@@ -44,8 +44,8 @@ typedef struct
 } ConfParams;
 
 // Function definitions
-int parseHTTP(int* new_socket, char *buffer);
-void *image_main(void *context);
+ parseHTTP(int* new_socket, char *buffer, const char *save_dir);
+ void *image_main(void *context);
 void *server_main(void *context);
 void RGB_to_grayscale(stbi_uc *image,int height, int width);
 void equalization(stbi_uc *image,int height, int width);
@@ -135,10 +135,9 @@ int main(int argc, char const *argv[])
 void *server_main(void *context)
 {
     ConfParams *params = context;
-
+    
     log_debug("PORT FROM SERVER THREAD: %i", params->port);
     log_debug("LOGFILE FROM SERVER THREAD: %s", params->log_file);
-
     int server_fd, new_socket;
     long valread;
     struct sockaddr_in address;
@@ -185,7 +184,7 @@ void *server_main(void *context)
 
         
         
-        parseHTTP(&new_socket,buffer);
+        parseHTTP(&new_socket,buffer,params->save_dir);
 
         // printf("________________________\n\n\n%s\n", buffer);
         free(buffer);
@@ -195,13 +194,13 @@ void *server_main(void *context)
     }
 }
 
-int parseHTTP(int* new_socket, char *buffer)
+int parseHTTP(int* new_socket, char* buffer, const char* save_dir)
 {
     long valread;
     int content_length=0;
     valread = read(*new_socket, buffer, BUFFER_SIZE);
     
-    printf("____________BUFFER____________\n\n\n%s\n___________________________\n", buffer);
+//     printf("____________BUFFER____________\n\n\n%s\n___________________________\n", buffer);
     
     char *s0, *s1;
     s0 = strstr(buffer, "x-www-form-urlencoded");
@@ -222,22 +221,21 @@ int parseHTTP(int* new_socket, char *buffer)
 
             
             FILE *fp;
-            fp = fopen("test_file3.png", "wb");
-//             fwrite(file_start+3, sizeof(char), BUFFER_SIZE - (file_start+3 - buffer), fp);
+            
+            time_t seconds;
+            seconds = time(NULL);
+            
+            
+            char sbuf[PATH_MAX_STRING_SIZE];
+            sprintf (sbuf, "%s/%ld.png", save_dir, seconds);
+            
+            
+            fp = fopen(sbuf, "wb");
             long read_bytes=0;
-            if (content_length>=read_bytes){
-                int n=1;
-                while(content_length>read_bytes){
-                    valread = read(*new_socket, buffer, BUFFER_SIZE);
-                    fwrite(buffer, sizeof(char), valread, fp);
-                    printf("leyendo otra vez el socket%d   bytes%ld\n",n, valread);
-                    n=n+1;
-                    read_bytes=read_bytes+valread;
-                    int cont=0;
-//                     for(cont=0;cont <10000000;cont=cont+1){
-//                         int a7=3+5;
-//                     }
-                }
+            while(content_length>read_bytes){
+                valread = read(*new_socket, buffer, BUFFER_SIZE);
+                fwrite(buffer, sizeof(char), valread, fp);
+                read_bytes=read_bytes+valread;
             }
             fclose(fp);
         }
