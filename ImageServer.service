@@ -1,0 +1,10 @@
+[Unit]
+Description=ImageServer
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/opt/ImageServer/ImageServer
+
+[Install]
+WantedBy=multi-user.target
