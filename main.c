@@ -90,15 +90,14 @@ int main(int argc, char const *argv[])
 
     // Create conf object
     FILE *f = fopen(CONFIG_FILE, "r");
-    uini_parse(f, conf_handler, &params);
-    fclose(f);
-
-    // TODO: Check if exists
-    if (false)
+    if (!f)
     {
-        puts("Error: Config file not found");
+        log_fatal("Error: Config file not found");
         return EXIT_FAILURE;
     }
+
+    uini_parse(f, conf_handler, &params);
+    fclose(f);
 
     // Setup logging
     FILE *log_file = fopen(params.log_file, "a");
