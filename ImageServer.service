@@ -1,9 +1,11 @@
 [Unit]
 Description=ImageServer
-
+After=network.target
+nano
 [Service]
 Type=oneshot
 RemainAfterExit=true
+WorkingDirectory=/opt/ImageServer
 ExecStart=/opt/ImageServer/ImageServer
 
 [Install]
