@@ -101,6 +101,9 @@ int main(int argc, char const *argv[])
     fclose(f);
 
     // Setup logging
+    char log_dir_name[PATH_MAX_STRING_SIZE];
+    strcpy(log_dir_name, params.log_file);
+    mkdir_p(dirname(log_dir_name), 0755);
     FILE *log_file = fopen(params.log_file, "a");
     log_add_fp(log_file, 0);
 
