@@ -26,7 +26,7 @@
 
 
 // Constants
-#define CONFIG_FILE "./server.conf"
+#define CONFIG_FILE "/etc/server/server.conf"
 #define PATH_MAX_STRING_SIZE 512
 #define BUFFER_SIZE 1024
 
@@ -44,8 +44,8 @@ typedef struct
 } ConfParams;
 
 // Function definitions
- parseHTTP(int* new_socket, char *buffer, const char *save_dir);
- void *image_main(void *context);
+parseHTTP(int* new_socket, char *buffer, const char *save_dir);
+void *image_main(void *context);
 void *server_main(void *context);
 void RGB_to_grayscale(stbi_uc *image,int height, int width);
 void equalization(stbi_uc *image,int height, int width);

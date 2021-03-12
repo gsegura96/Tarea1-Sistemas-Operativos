@@ -5,8 +5,8 @@ After=network.target
 [Service]
 Type=simple
 RemainAfterExit=true
-WorkingDirectory=/opt/ImageServer
-ExecStart=/opt/ImageServer/ImageServer
+WorkingDirectory=/etc/server
+ExecStart=/etc/server/ImageServer
 PrivateTmp=false
 
 [Install]
